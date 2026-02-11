@@ -1,0 +1,392 @@
+import { useEffect, useState } from 'react'
+import { useAuth } from '../../contexts/AuthContext'
+import {
+  userSettingsService,
+  type UserSettings,
+} from '../../services/userSettingsService'
+import { clearAllUserData } from '../../services/dataService'
+import { ConfirmModal } from '../ui/ConfirmModal'
+
+const CURRENCIES = ['USD', 'EUR', 'GBP', 'GHS', 'NGN']
+const DATE_FORMATS = [
+  { value: 'MM/DD', label: 'Month / Day (e.g. 12/31)' },
+  { value: 'DD/MM', label: 'Day / Month (e.g. 31/12)' },
+]
+const START_OF_WEEK = [
+  { value: 'sunday', label: 'Sunday' },
+  { value: 'monday', label: 'Monday' },
+]
+const PREF_STORAGE_KEY = 'myfintrack_prefs'
+
+export const Settings = () => {
+  const { user, signOut, updateDisplayName } = useAuth()
+  const [_settings, setSettings] = useState<UserSettings | null>(null)
+  const [currency, setCurrency] = useState('USD')
+  const [grossIncome, setGrossIncome] = useState('')
+  const [redLineAmount, setRedLineAmount] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [clearDataModalOpen, setClearDataModalOpen] = useState(false)
+  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false)
+
+  const [displayName, setDisplayName] = useState('')
+  const [savingName, setSavingName] = useState(false)
+  const [dateFormat, setDateFormat] = useState('MM/DD')
+  const [startOfWeek, setStartOfWeek] = useState('sunday')
+  const [emailReminders, setEmailReminders] = useState(false)
+  const [exportMessage, setExportMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!user) return
+
+    const load = async () => {
+      try {
+        setLoading(true)
+        const existing = await userSettingsService.getForUser(user.id)
+        if (existing) {
+          setSettings(existing)
+          setCurrency(existing.currency ?? 'USD')
+          setGrossIncome(
+            existing.gross_income != null ? String(existing.gross_income) : '',
+          )
+          setRedLineAmount(
+            existing.red_line_amount != null ? String(existing.red_line_amount) : '',
+          )
+        }
+        const display =
+          (user.user_metadata?.display_name as string | undefined)?.trim() ||
+          (user.email ? user.email.split('@')[0] : '')
+        setDisplayName(display || '')
+        try {
+          const prefs = JSON.parse(localStorage.getItem(PREF_STORAGE_KEY) ?? '{}')
+          if (prefs.dateFormat) setDateFormat(prefs.dateFormat)
+          if (prefs.startOfWeek) setStartOfWeek(prefs.startOfWeek)
+          if (typeof prefs.emailReminders === 'boolean') setEmailReminders(prefs.emailReminders)
+        } catch (_) {}
+      } catch (err) {
+        const msg =
+          err instanceof Error ? err.message : 'Failed to load settings.'
+        setError(msg)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    void load()
+  }, [user])
+
+  const handleSaveDisplayName = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSavingName(true)
+    setError(null)
+    setMessage(null)
+    try {
+      await updateDisplayName(displayName.trim() || '')
+      setMessage('Display name saved.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save display name.')
+    } finally {
+      setSavingName(false)
+    }
+  }
+
+  const savePreferences = () => {
+    localStorage.setItem(PREF_STORAGE_KEY, JSON.stringify({
+      dateFormat,
+      startOfWeek,
+      emailReminders,
+    }))
+    setMessage('Preferences saved.')
+  }
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user) return
+
+    try {
+      setSaving(true)
+      setError(null)
+      setMessage(null)
+
+      const incomeNumber = grossIncome ? Number(grossIncome) : null
+      const redLine = redLineAmount ? Number(redLineAmount) : null
+      if (incomeNumber != null && incomeNumber < 0) {
+        setError('Gross income cannot be negative.')
+        return
+      }
+      if (redLine != null && redLine < 0) {
+        setError('Red line amount cannot be negative.')
+        return
+      }
+
+      const updated = await userSettingsService.upsert(user.id, {
+        grossIncome: incomeNumber,
+        redLineAmount: redLine,
+        currency,
+      })
+
+      setSettings(updated)
+      setMessage('Settings saved.')
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : 'Failed to save settings.'
+      setError(msg)
+      console.error('Settings save error', err)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <header>
+        <h1 className="text-xl font-semibold text-[var(--text)]">Account & settings</h1>
+        <p className="text-sm text-[var(--text-muted)]">
+          Manage your profile, finances, and preferences.
+        </p>
+      </header>
+
+      {/* Profile */}
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-6">
+        <h2 className="text-lg font-semibold text-[var(--text)] mb-3">Profile</h2>
+        <dl className="space-y-2 text-sm mb-4">
+          <div>
+            <dt className="text-[var(--text-muted)]">Email</dt>
+            <dd className="font-medium text-[var(--text)]">{user?.email ?? '—'}</dd>
+          </div>
+        </dl>
+        <form onSubmit={handleSaveDisplayName} className="space-y-3 mb-3">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Display name / Username</label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Your name"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            />
+            <p className="mt-1 text-xs text-[var(--text-muted)]">Shown in the sidebar and across the app. Saved to your account.</p>
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={savingName}
+              className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50 transition-colors min-h-[44px] touch-manipulation"
+            >
+              {savingName ? 'Saving…' : 'Save name'}
+            </button>
+          </div>
+        </form>
+        <p className="text-xs text-[var(--text-muted)] mt-2">Sign-in is managed by your auth provider. To change email or password, use the provider's account settings.</p>
+      </section>
+
+      <form
+        onSubmit={handleSave}
+        className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-6 space-y-4"
+      >
+        <h2 className="text-lg font-semibold text-[var(--text)]">Financial defaults</h2>
+        {loading && <p className="text-sm text-[var(--text-muted)]">Loading…</p>}
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200">
+            {error}
+          </div>
+        )}
+        {message && (
+          <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800 dark:border-green-900 dark:bg-green-950/50 dark:text-green-200">
+            {message}
+          </div>
+        )}
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Default currency</label>
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-[var(--text-muted)]">Used for all amounts.</p>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Monthly gross income</label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={grossIncome}
+              onChange={(e) => setGrossIncome(e.target.value)}
+              placeholder="Total income before expenses"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            />
+            <p className="mt-1 text-xs text-[var(--text-muted)]">Baseline before expenses.</p>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Red line amount (optional)</label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={redLineAmount}
+              onChange={(e) => setRedLineAmount(e.target.value)}
+              placeholder="Warn when remaining reaches this"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            />
+            <p className="mt-1 text-xs text-[var(--text-muted)]">Show warning on Transactions when remaining is at or below this.</p>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={saving}
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50 transition-colors min-h-[44px] touch-manipulation"
+          >
+            {saving ? 'Saving…' : 'Save changes'}
+          </button>
+        </div>
+      </form>
+
+      {/* Preferences */}
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-6 space-y-4">
+        <h2 className="text-lg font-semibold text-[var(--text)]">Preferences</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Date format</label>
+            <select
+              value={dateFormat}
+              onChange={(e) => setDateFormat(e.target.value)}
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            >
+              {DATE_FORMATS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Start of week</label>
+            <select
+              value={startOfWeek}
+              onChange={(e) => setStartOfWeek(e.target.value)}
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            >
+              {START_OF_WEEK.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="emailReminders"
+            checked={emailReminders}
+            onChange={(e) => setEmailReminders(e.target.checked)}
+            className="h-4 w-4 rounded border-[var(--border)] text-primary"
+          />
+          <label htmlFor="emailReminders" className="text-sm font-medium text-[var(--text)]">Email reminders (e.g. budget alerts)</label>
+        </div>
+        <p className="text-xs text-[var(--text-muted)]">Stored on this device. Email reminders are not yet implemented.</p>
+        <button
+          type="button"
+          onClick={savePreferences}
+          className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors min-h-[44px] touch-manipulation"
+        >
+          Save preferences
+        </button>
+      </section>
+
+      {/* Data */}
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-6">
+        <h2 className="text-lg font-semibold text-[var(--text)] mb-3">Data</h2>
+        <p className="text-sm text-[var(--text-muted)] mb-3">Export your transactions and budgets. (Export feature coming soon.)</p>
+        <button
+          type="button"
+          onClick={() => { setExportMessage('Export is not available yet.'); setTimeout(() => setExportMessage(null), 3000); }}
+          className="rounded-lg border border-[var(--border)] px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors min-h-[44px] touch-manipulation"
+        >
+          Export my data
+        </button>
+        {exportMessage && <p className="mt-2 text-sm text-[var(--text-muted)]">{exportMessage}</p>}
+      </section>
+
+      {/* About */}
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-6">
+        <h2 className="text-lg font-semibold text-[var(--text)] mb-3">About</h2>
+        <p className="text-sm text-[var(--text-muted)]">MyFinTrack — track income, expenses, budgets, and savings.</p>
+        <p className="text-xs text-[var(--text-muted)] mt-1">Version 1.0.0</p>
+      </section>
+
+      {/* Danger zone */}
+      <section className="rounded-xl border border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-950/20 p-4 md:p-6 space-y-4">
+        <h2 className="text-lg font-semibold text-[var(--text)]">Danger zone</h2>
+        <p className="text-sm text-[var(--text-muted)]">
+          These actions are irreversible. Use with caution.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-end">
+          <button
+            type="button"
+            onClick={() => setClearDataModalOpen(true)}
+            className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 transition-colors min-h-[44px] touch-manipulation"
+          >
+            Clear all data
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeleteAccountModalOpen(true)}
+            className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 transition-colors min-h-[44px] touch-manipulation"
+          >
+            Delete account
+          </button>
+        </div>
+      </section>
+
+      <ConfirmModal
+        open={clearDataModalOpen}
+        onClose={() => setClearDataModalOpen(false)}
+        onConfirm={async () => {
+          if (!user) return
+          await clearAllUserData(user.id)
+          setMessage('All your data has been cleared.')
+          setSettings(null)
+          setCurrency('USD')
+          setGrossIncome('')
+          setRedLineAmount('')
+        }}
+        title="Clear all data?"
+        description={
+          <>
+            This will permanently delete all your transactions, budgets, savings goals, categories, and settings. You will stay signed in. This cannot be undone.
+          </>
+        }
+        confirmLabel="Clear all data"
+        variant="danger"
+      />
+
+      <ConfirmModal
+        open={deleteAccountModalOpen}
+        onClose={() => setDeleteAccountModalOpen(false)}
+        onConfirm={async () => {
+          await signOut()
+          // Note: Full account deletion requires Supabase Dashboard → Authentication → Users
+          window.location.href = '/'
+        }}
+        title="Delete account?"
+        description={
+          <>
+            You will be signed out. To permanently delete your account and all data, use your Supabase project dashboard: Authentication → Users → delete your user, or contact support.
+          </>
+        }
+        confirmLabel="Sign out"
+        variant="danger"
+      />
+    </div>
+  )
+}
+
+

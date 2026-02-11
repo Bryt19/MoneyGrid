@@ -1,0 +1,66 @@
+import type { FormEvent } from 'react'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
+import { AuthCard } from '../ui/AuthCard'
+
+export const Login = () => {
+  const { signIn } = useAuth()
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      await signIn(email, password)
+      navigate('/dashboard')
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to sign in. Please try again.'
+      setError(message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <AuthCard
+      mode="signin"
+      title="Welcome back"
+      subtitle="Sign in to your MyFinTrack account"
+      email={email}
+      password={password}
+      onEmailChange={setEmail}
+      onPasswordChange={setPassword}
+      showPassword={showPassword}
+      onShowPasswordToggle={() => setShowPassword((p) => !p)}
+      onSubmit={handleSubmit}
+      loading={loading}
+      error={error}
+      submitLabel={loading ? 'Signing in…' : 'Sign in'}
+      emailId="login-email"
+      passwordId="login-password"
+      emailAutoComplete="email"
+      passwordAutoComplete="current-password"
+      passwordMinLength={6}
+      footer={
+        <>
+          Don&apos;t have an account?{' '}
+          <Link
+            to="/register"
+            className="font-semibold text-primary hover:underline focus:outline-none focus:underline"
+          >
+            Sign up
+          </Link>
+        </>
+      }
+    />
+  )
+}
+

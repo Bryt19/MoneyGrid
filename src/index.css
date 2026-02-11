@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap");
+
+:root {
+  --page-bg: #fafafa;
+  --card-bg: #ffffff;
+  --border: #e5e5e5;
+  --text: #171717;
+  --text-muted: #737373;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --btn-primary-bg: #2563eb;
+  --btn-primary-text: #ffffff;
+  --income: #059669;
+  --expense: #92400e;
+  --balance: #1e40af;
+  --savings-rate: #7c3aed;
+}
+
+.dark {
+  --page-bg: #0a0a0a;
+  --card-bg: #141414;
+  --border: #262626;
+  --text: #fafafa;
+  --text-muted: #a3a3a3;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --btn-primary-bg: #2563eb;
+  --btn-primary-text: #ffffff;
+  --income: #34d399;
+  --expense: #d97706;
+  --balance: #60a5fa;
+  --savings-rate: #a78bfa;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+  background-color: var(--page-bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Ensure buttons and inputs are clearly visible */
+button:not(:disabled):hover {
+  opacity: 0.92;
+}
+
+/* Clickable effect for buttons */
+button:not(:disabled):active {
+  transform: scale(0.98);
+}
+button:not(:disabled) {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+/* Mobile: comfortable tap targets and prevent accidental zoom on double-tap */
+@media (max-width: 1023px) {
+  button,
+  a[href],
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Scrollbar for horizontal scroll (e.g. transaction table on mobile) */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

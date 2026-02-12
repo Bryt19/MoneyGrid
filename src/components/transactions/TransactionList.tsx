@@ -49,6 +49,8 @@ export const TransactionList = () => {
   const [editCategoryId, setEditCategoryId] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editReceiptUrl, setEditReceiptUrl] = useState<string | null>(null);
+  const [editReceiptFile, setEditReceiptFile] = useState<File | null>(null);
   const [editSaving, setEditSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<UiTransaction | null>(null);
 
@@ -206,6 +208,8 @@ export const TransactionList = () => {
     setEditCategoryId(tx.categoryId);
     setEditDate(tx.date);
     setEditDescription(tx.description ?? "");
+    setEditReceiptUrl(tx.receiptUrl);
+    setEditReceiptFile(null);
   };
 
   const handleEdit = async (e: React.FormEvent) => {
@@ -225,12 +229,23 @@ export const TransactionList = () => {
       const catId = typeCategoriesForEdit.some((c) => c.id === editCategoryId)
         ? editCategoryId
         : (typeCategoriesForEdit[0]?.id ?? editing.categoryId);
+      
+      let finalReceiptUrl = editReceiptUrl;
+      if (editReceiptFile && user) {
+        const uploaded = await transactionService.uploadReceipt(
+          editReceiptFile,
+          user.id,
+        );
+        finalReceiptUrl = uploaded.publicUrl;
+      }
+
       await transactionService.update(editing.id, {
         amount: amountNumber,
         type: editType,
         categoryId: catId,
         date: editDate,
         description: editDescription || null,
+        receiptUrl: finalReceiptUrl,
       });
       const cat = categories.find((c) => c.id === catId);
       setTransactions((prev) =>
@@ -244,6 +259,7 @@ export const TransactionList = () => {
                 categoryName: cat?.name ?? "Uncategorized",
                 date: editDate,
                 description: editDescription || null,
+                receiptUrl: finalReceiptUrl,
               }
             : t,
         ),
@@ -603,6 +619,37 @@ export const TransactionList = () => {
                     onChange={(e) => setEditDescription(e.target.value)}
                     placeholder="Optional"
                     className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-[var(--text)]">
+                    Receipt
+                  </label>
+                  {editReceiptUrl && !editReceiptFile && (
+                    <div className="flex items-center gap-2 mb-2 p-2 rounded border border-[var(--border)] bg-[var(--page-bg)]">
+                      <a
+                        href={editReceiptUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sm text-primary hover:underline px-1"
+                      >
+                        View current
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setEditReceiptUrl(null)}
+                        className="ml-auto p-1 text-[var(--text-muted)] hover:text-red-500"
+                        aria-label="Remove receipt"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept=".png,.jpg,.jpeg,.pdf"
+                    onChange={(e) => setEditReceiptFile(e.target.files?.[0] ?? null)}
+                    className="block w-full text-sm text-[var(--text-muted)] file:mr-2 file:rounded file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:text-white file:hover:bg-primary-hover"
                   />
                 </div>
                 <div className="flex gap-2 justify-end pt-2">

@@ -6,6 +6,7 @@ import {
 } from '../../services/userSettingsService'
 import { clearAllUserData } from '../../services/dataService'
 import { ConfirmModal } from '../ui/ConfirmModal'
+import { useTheme } from '../../contexts/ThemeContext'
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'GHS', 'NGN']
 const DATE_FORMATS = [
@@ -20,6 +21,7 @@ const PREF_STORAGE_KEY = 'myfintrack_prefs'
 
 export const Settings = () => {
   const { user, signOut, updateDisplayName } = useAuth()
+  const { isDark, setTheme } = useTheme()
   const [_settings, setSettings] = useState<UserSettings | null>(null)
   const [currency, setCurrency] = useState('USD')
   const [grossIncome, setGrossIncome] = useState('')
@@ -38,6 +40,9 @@ export const Settings = () => {
   const [emailReminders, setEmailReminders] = useState(false)
   const [enableNotifications, setEnableNotifications] = useState(true)
   const [exportMessage, setExportMessage] = useState<string | null>(null)
+  const [nameMessage, setNameMessage] = useState<string | null>(null)
+  const [financialMessage, setFinancialMessage] = useState<string | null>(null)
+  const [preferencesMessage, setPreferencesMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) return
@@ -83,10 +88,11 @@ export const Settings = () => {
     e.preventDefault()
     setSavingName(true)
     setError(null)
-    setMessage(null)
+    setNameMessage(null)
     try {
       await updateDisplayName(displayName.trim() || '')
-      setMessage('Display name saved.')
+      setNameMessage('Display name saved.')
+      setTimeout(() => setNameMessage(null), 3500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save display name.')
     } finally {
@@ -101,7 +107,8 @@ export const Settings = () => {
       emailReminders,
       enableNotifications,
     }))
-    setMessage('Preferences saved.')
+    setPreferencesMessage('Preferences saved.')
+    setTimeout(() => setPreferencesMessage(null), 3500)
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -131,7 +138,8 @@ export const Settings = () => {
       })
 
       setSettings(updated)
-      setMessage('Settings saved.')
+      setFinancialMessage('Settings saved.')
+      setTimeout(() => setFinancialMessage(null), 3500)
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : 'Failed to save settings.'
@@ -170,13 +178,19 @@ export const Settings = () => {
               placeholder="Your name"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
             />
-            <p className="mt-1 text-xs text-[var(--text-muted)]">Shown in the sidebar and across the app. Saved to your account.</p>
+
+  <p className="mt-1 text-xs text-[var(--text-muted)]">Shown in the sidebar and across the app. Saved to your account.</p>
+  {nameMessage && (
+    <div className="mt-2 inline-block rounded-md bg-green-50 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 animate-in fade-in slide-in-from-top-1">
+      {nameMessage}
+    </div>
+  )}
           </div>
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={savingName}
-              className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50 transition-colors min-h-[44px] touch-manipulation"
+              className="rounded-lg border border-primary px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary hover:text-white disabled:opacity-50 transition-colors min-h-[44px] touch-manipulation"
             >
               {savingName ? 'Saving…' : 'Save name'}
             </button>
@@ -196,6 +210,7 @@ export const Settings = () => {
             {error}
           </div>
         )}
+        {/* Global message for data clear etc. */}
         {message && (
           <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800 dark:border-green-900 dark:bg-green-950/50 dark:text-green-200">
             {message}
@@ -244,11 +259,16 @@ export const Settings = () => {
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex items-center gap-3 justify-end">
+          {financialMessage && (
+            <div className="inline-block rounded-md bg-green-50 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 animate-in fade-in slide-in-from-right-1">
+              {financialMessage}
+            </div>
+          )}
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50 transition-colors min-h-[44px] touch-manipulation"
+            className="rounded-lg border border-primary px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary hover:text-white disabled:opacity-50 transition-colors min-h-[44px] touch-manipulation"
           >
             {saving ? 'Saving…' : 'Save changes'}
           </button>
@@ -283,6 +303,17 @@ export const Settings = () => {
               ))}
             </select>
           </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-[var(--text)]">Theme</label>
+            <select
+              value={isDark ? 'dark' : 'light'}
+              onChange={(e) => setTheme(e.target.value === 'dark')}
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2.5 min-h-[44px] text-base text-[var(--text)] touch-manipulation"
+            >
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -305,13 +336,20 @@ export const Settings = () => {
           <label htmlFor="emailReminders" className="text-sm font-medium text-[var(--text)]">Email reminders (e.g. budget alerts)</label>
         </div>
         <p className="text-xs text-[var(--text-muted)]">Stored on this device. Email reminders are not yet implemented.</p>
-        <button
-          type="button"
-          onClick={savePreferences}
-          className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors min-h-[44px] touch-manipulation"
-        >
-          Save preferences
-        </button>
+        <div className="flex items-center gap-3 justify-end">
+          {preferencesMessage && (
+            <div className="inline-block rounded-md bg-green-50 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 animate-in fade-in slide-in-from-right-1">
+              {preferencesMessage}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={savePreferences}
+            className="rounded-lg border border-primary px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary hover:text-white transition-colors min-h-[44px] touch-manipulation"
+          >
+            Save preferences
+          </button>
+        </div>
       </section>
 
       {/* Data */}

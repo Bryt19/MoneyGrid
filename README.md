@@ -6,14 +6,15 @@ A modern, full-featured personal finance web app for tracking income, expenses, 
 
 ## Features
 
-- **Dashboard** — Overview of income, expenses, balance, and quick insights
-- **Transactions** — Add, edit, and filter income and expenses with categories
+- **Dashboard** — Overview of income, expenses, balance, and quick insights with category-based spending charts
+- **Transactions** — Add, edit, and filter income and expenses. Supports **Receipt Upload, Viewing, and Removal**.
 - **Budgets** — Set monthly budgets and track spending by category
 - **Savings goals** — Define goals, contribute, and monitor progress
 - **Analytics** — Charts and trends for your financial data
-- **Settings** — Currency, income defaults, display name, and preferences
-- **Authentication** — Secure sign up / sign in with email and strong password rules
-- **Theme** — Light and dark mode support
+- **Settings** — Manage currency, financial defaults, display name, and preferences.
+- **Authentication** — Secure sign-up/sign-in with email and persistent session management.
+- **Theme** — Light and dark mode support with **Cross-Device Synchronization** saved to your profile.
+- **Deployment** — Optimized for Vercel with dedicated routing configuration.
 
 ---
 
@@ -55,6 +56,10 @@ npm install
    - **Project URL**
    - **anon (public) key**
 3. Apply the schema: in the SQL Editor, run the contents of `supabase-schema.sql` to create tables and RLS policies.
+   - **Note**: Ensure the `user_settings` table has a `theme` column:
+     ```sql
+     ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS theme TEXT DEFAULT 'light';
+     ```
 
 ### 3. Environment variables
 

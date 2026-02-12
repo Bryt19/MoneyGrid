@@ -9,14 +9,14 @@ import { NotificationProvider } from './contexts/NotificationContext'
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <ThemeProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
         <NotificationProvider>
           <BrowserRouter>
             <App />
           </BrowserRouter>
         </NotificationProvider>
-      </AuthProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProvider>
   </StrictMode>,
 )

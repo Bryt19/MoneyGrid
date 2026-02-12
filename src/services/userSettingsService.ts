@@ -6,6 +6,7 @@ export type UserSettings = {
   gross_income: number | null
   red_line_amount: number | null
   currency: string
+  theme: 'light' | 'dark'
 }
 
 export const userSettingsService = {
@@ -24,35 +25,50 @@ export const userSettingsService = {
     grossIncome: number | null
     redLineAmount: number | null
     currency: string
+    theme?: 'light' | 'dark'
   }) {
-    const payloadWithRedLine = {
+    const payloadFull = {
       user_id: userId,
       gross_income: input.grossIncome,
       red_line_amount: input.redLineAmount,
       currency: input.currency,
+      theme: input.theme,
     }
-    const payloadWithoutRedLine = {
+    
+    // Fallback if columns are missing (for local dev / older DB state)
+    const payloadMinimal = {
       user_id: userId,
       gross_income: input.grossIncome,
       currency: input.currency,
     }
 
-    const run = (payload: typeof payloadWithRedLine) =>
+    const run = (payload: any) =>
       supabase
         .from('user_settings')
         .upsert(payload, { onConflict: 'user_id' })
         .select()
         .single()
 
-    const { data, error } = await run(payloadWithRedLine)
+    const { data, error } = await run(payloadFull)
 
     if (error) {
       const msg = error.message ?? ''
-      const looksLikeMissingColumn =
-        /red_line_amount|column.*does not exist|unknown column/i.test(msg)
-      if (looksLikeMissingColumn) {
-        const { data: data2, error: error2 } = await run(payloadWithoutRedLine as any)
-        if (error2) throw error2
+      // If red_line_amount or theme columns don't exist yet, try a safer payload
+      const isMissingColumn = /column.*does not exist|unknown column/i.test(msg)
+      
+      if (isMissingColumn) {
+        // Try removing red_line_amount and theme if they fail
+        const payloadSafe = { ...payloadFull } as any
+        if (msg.includes('red_line_amount')) delete payloadSafe.red_line_amount
+        if (msg.includes('theme')) delete payloadSafe.theme
+        
+        const { data: data2, error: error2 } = await run(payloadSafe)
+        if (error2) {
+          // Final fallback to absolute minimum
+          const { data: data3, error: error3 } = await run(payloadMinimal)
+          if (error3) throw error3
+          return data3 as UserSettings
+        }
         return data2 as UserSettings
       }
       throw error

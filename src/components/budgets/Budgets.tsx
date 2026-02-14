@@ -138,7 +138,7 @@ export const Budgets = () => {
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-sm text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
             />
           </div>
-          <button type="button" onClick={() => setOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors shrink-0">
+          <button type="button" onClick={() => setOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] shrink-0">
             <Plus className="h-4 w-4" />
             Add budget
           </button>
@@ -178,8 +178,8 @@ export const Budgets = () => {
                   <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Notes" className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" />
                 </div>
               <div className="flex gap-2 justify-end pt-2">
-                <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)]">Cancel</button>
-                <button type="submit" disabled={saving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button>
+                <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-all active:scale-[0.98]">Cancel</button>
+                <button type="submit" disabled={saving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button>
               </div>
             </form>
           </div>
@@ -251,7 +251,7 @@ export const Budgets = () => {
                 </div>
                 <div className="flex gap-2 justify-end pt-2">
                   <button type="button" onClick={() => setEditMode(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)]">Cancel</button>
-                  <button type="submit" disabled={editSaving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50">{editSaving ? 'Saving…' : 'Save'}</button>
+                  <button type="submit" disabled={editSaving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-primary-hover disabled:opacity-50">{editSaving ? 'Saving…' : 'Save'}</button>
                 </div>
               </form>
             ) : (

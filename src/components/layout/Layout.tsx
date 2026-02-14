@@ -1,14 +1,15 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BarChart3,
+  ChevronUp,
   ClipboardList,
   Home,
   LogOut,
   Menu,
   PiggyBank,
   Settings,
-  User,
   Wallet,
+  X,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -30,8 +31,12 @@ function getInitial(displayNameOrEmail: string | undefined): string {
   const part = displayNameOrEmail.includes("@")
     ? displayNameOrEmail.split("@")[0]
     : displayNameOrEmail;
-  if (!part) return "U";
-  return part.slice(0, 2).toUpperCase();
+  
+  const words = part.trim().split(/\s+/);
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+  return words[0].slice(0, 2).toUpperCase();
 }
 
 function getDisplayNameFromEmail(email: string | undefined): string {
@@ -52,10 +57,22 @@ export const Layout = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showMobileHeader, setShowMobileHeader] = useState(true);
   const lastScrollTop = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
   const welcomeShownRef = useRef(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const el = mainRef.current;
@@ -83,88 +100,118 @@ export const Layout = () => {
     if (location.state?.welcome && !welcomeShownRef.current && user) {
       showSuccess(`Welcome back, ${displayName}`);
       welcomeShownRef.current = true;
-      // Clear state so it doesn't show again on refresh
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, displayName, showSuccess, navigate, user]);
 
   const initial = getInitial(displayName || user?.email);
 
-  return (
-    <div className="w-full min-w-0 min-h-screen flex bg-[var(--page-bg)] text-[var(--text)]">
-      {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex w-64 flex-col border-r border-[var(--border)] bg-[var(--card-bg)] shrink-0">
-        <div className="p-4 border-b border-[var(--border)]">
-          <div className="flex items-center gap-3">
-            <img
-              src={isDark ? "/favicon.svg" : "/logo-light.svg"}
-              alt=""
-              className="h-9 w-9 rounded-lg shrink-0 object-contain"
-            />
-            <div className="min-w-0">
-              <p className="font-semibold text-[var(--text)] truncate">
-                MyFinTrack
-              </p>
-              <p className="text-xs text-[var(--text-muted)]">
-                Expense tracker
-              </p>
-            </div>
+  const SidebarContent = ({ isMobile = false }) => (
+    <div className="flex h-full flex-col">
+      <div className="p-4 border-b border-[var(--border)]">
+        <div className="flex items-center gap-3">
+          <img
+            src={isDark ? "/favicon.svg" : "/logo-light.svg"}
+            alt=""
+            className="h-9 w-9 rounded-lg shrink-0 object-contain"
+          />
+          <div className="min-w-0">
+            <p className="font-semibold text-[var(--text)] truncate">
+              MyFinTrack
+            </p>
+            <p className="text-xs text-[var(--text-muted)]">
+              Expense tracker
+            </p>
           </div>
-        </div>
-        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-          {navItems.map(({ to, label, icon: Icon }) => (
-            <Link
-              key={to}
-              to={to}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-[var(--text)] transition-colors"
+          {isMobile && (
+            <button 
+              onClick={() => setMobileOpen(false)}
+              className="ml-auto p-1 rounded-lg hover:bg-[var(--border)] lg:hidden"
             >
-              <Icon className="h-4 w-4 shrink-0" />
-              {label}
-            </Link>
-          ))}
-        </nav>
-        {/* Profile block */}
-        <div className="p-3 border-t border-[var(--border)] shrink-0">
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--page-bg)] p-3">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-[var(--border)] bg-[var(--page-bg)] text-[var(--text)] font-semibold text-sm ring-2 ring-primary/20">
-                {initial}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-medium text-[var(--text)] truncate">
-                  {displayName}
-                </p>
-                <p className="text-xs text-[var(--text-muted)] truncate">
-                  {user?.email}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-3">
-              <User className="h-3.5 w-3.5 shrink-0" />
-              <span>Member</span>
-            </div>
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </div>
+      <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+        {navItems.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            onClick={() => isMobile && setMobileOpen(false)}
+            className={`flex items-center gap-3 rounded-lg px-3 ${isMobile ? 'py-2' : 'py-2.5'} text-sm font-medium transition-colors ${
+              location.pathname === to 
+                ? 'bg-primary/10 text-primary' 
+                : 'text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-[var(--text)]'
+            }`}
+          >
+            <Icon className="h-4 w-4 shrink-0" />
+            {label}
+          </Link>
+        ))}
+      </nav>
+      {/* Profile block */}
+      <div className="p-3 border-t border-[var(--border)] shrink-0 relative" ref={profileMenuRef}>
+        {profileMenuOpen && (
+          <div className="absolute bottom-full left-3 right-3 mb-2 rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-2 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
             <Link
               to="/settings"
-              className="block text-center rounded-lg border border-[var(--border)] py-2.5 min-h-[44px] flex items-center justify-center text-xs font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors mb-2 touch-manipulation"
+              onClick={() => {
+                setProfileMenuOpen(false);
+                if (isMobile) setMobileOpen(false);
+              }}
+              className="flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors"
             >
+              <Settings className="h-4 w-4 shrink-0 text-[var(--text-muted)]" />
               Account & settings
             </Link>
             <button
               type="button"
-              onClick={() => setLogoutConfirmOpen(true)}
-              className="w-full flex items-center justify-center gap-2 rounded-lg bg-red-600 py-2.5 min-h-[44px] text-xs font-medium text-white hover:bg-red-700 transition-colors touch-manipulation"
+              onClick={() => {
+                setProfileMenuOpen(false);
+                setLogoutConfirmOpen(true);
+              }}
+              className="flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors mt-1"
             >
-              <LogOut className="h-3.5 w-3.5" />
+              <LogOut className="h-4 w-4 shrink-0" />
               Log out
             </button>
           </div>
-        </div>
+        )}
+        
+        <button
+          type="button"
+          onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+          className={`w-full flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--page-bg)] ${isMobile ? 'p-2.5' : 'p-3'} text-left transition-all hover:border-primary/30 hover:shadow-md active:scale-[0.98] ${profileMenuOpen ? 'ring-2 ring-primary/20 border-primary/30' : ''}`}
+        >
+          <div className={`flex ${isMobile ? 'h-9 w-9' : 'h-10 w-10'} shrink-0 items-center justify-center rounded-full border-2 border-[var(--border)] bg-[var(--card-bg)] text-[var(--text)] font-semibold text-sm ring-2 ring-primary/10`}>
+            {initial}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-medium text-[var(--text)] truncate text-sm">
+              {displayName}
+            </p>
+            <p className="text-[10px] text-[var(--text-muted)] truncate">
+              {user?.email}
+            </p>
+          </div>
+          <ChevronUp className={`h-4 w-4 text-[var(--text-muted)] transition-transform duration-200 ${profileMenuOpen ? 'rotate-180' : ''}`} />
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full min-w-0 min-h-screen flex bg-[var(--page-bg)] text-[var(--text)]">
+      {/* Sidebar - Desktop */}
+      <aside className="hidden lg:flex w-64 flex-col border-r border-[var(--border)] bg-[var(--card-bg)] shrink-0">
+        <SidebarContent />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 min-h-screen lg:min-h-0">
         <header
           className={[
-            "z-50 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 border-b border-[var(--border)] bg-[var(--card-bg)] shrink-0 transition-transform duration-300 ease-out",
+            "z-40 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 border-b border-[var(--border)] bg-[var(--card-bg)] shrink-0 transition-transform duration-300 ease-out",
             "lg:sticky lg:top-0",
             "fixed top-0 left-0 right-0 lg:relative lg:left-auto lg:right-auto",
             showMobileHeader || mobileOpen ? "translate-y-0" : "-translate-y-full lg:translate-y-0",
@@ -173,7 +220,7 @@ export const Layout = () => {
           <button
             type="button"
             className="lg:hidden flex h-9 w-9 min-h-[36px] min-w-[36px] items-center justify-center rounded-lg border border-[var(--border)] text-[var(--text)] touch-manipulation"
-            onClick={() => setMobileOpen((o) => !o)}
+            onClick={() => setMobileOpen(true)}
             aria-label="Menu"
           >
             <Menu className="h-5 w-5" />
@@ -195,63 +242,22 @@ export const Layout = () => {
           </div>
         </header>
 
-        {/* Spacer for fixed header on mobile, hides when header hides (except when menu open) */}
+        {/* Spacer for fixed header on mobile */}
         <div 
           className={`lg:hidden h-[53px] shrink-0 pointer-events-none transition-[margin-top] duration-300 ${showMobileHeader || mobileOpen ? '' : '-mt-[53px]'}`} 
           aria-hidden 
         />
 
-        {mobileOpen && (
-          <>
-            <div className="fixed inset-0 z-40 bg-black/20 lg:hidden" onClick={() => setMobileOpen(false)} />
-            <nav className="fixed top-[53px] left-0 right-0 z-40 lg:hidden border-b border-[var(--border)] bg-[var(--card-bg)] p-3 space-y-0.5 max-h-[calc(100vh-53px)] overflow-y-auto shadow-xl">
-              {navItems.map(({ to, label, icon: Icon }) => (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-[40px] text-sm font-medium text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-[var(--text)] touch-manipulation transition-colors"
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  {label}
-                </Link>
-              ))}
-              <div className="pt-2 mt-2 border-t border-[var(--border)] px-3 py-2">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[var(--border)] bg-[var(--page-bg)] text-[var(--text)] font-semibold text-sm ring-2 ring-primary/20">
-                    {initial}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-[var(--text)] truncate text-sm">
-                      {displayName}
-                    </p>
-                    <p className="text-xs text-[var(--text-muted)] truncate">
-                      {user?.email}
-                    </p>
-                  </div>
-                </div>
-                
-                <Link
-                  to="/settings"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-2 py-2.5 mb-2 min-h-[40px] text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors touch-manipulation"
-                >
-                  <Settings className="h-4 w-4 shrink-0" />
-                  Account & settings
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => setLogoutConfirmOpen(true)}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-red-600 py-2.5 min-h-[40px] text-sm font-medium text-white hover:bg-red-700 transition-colors touch-manipulation"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Log out
-                </button>
-              </div>
-            </nav>
-          </>
-        )}
+        {/* Mobile Sidebar Drawer */}
+        <div className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${mobileOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+          <div 
+            className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100' : 'opacity-0'}`} 
+            onClick={() => setMobileOpen(false)} 
+          />
+          <div className={`absolute inset-y-0 left-0 w-64 bg-[var(--card-bg)] shadow-2xl transition-transform duration-300 ease-out border-r border-[var(--border)] ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <SidebarContent isMobile />
+          </div>
+        </div>
 
         <ConfirmModal
           open={logoutConfirmOpen}

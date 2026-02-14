@@ -181,7 +181,7 @@ export const SavingsGoals = () => {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors shrink-0"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] shrink-0"
           >
             <Plus className="h-4 w-4" />
             Add savings goal
@@ -236,10 +236,10 @@ export const SavingsGoals = () => {
                 />
               </div>
               <div className="flex gap-2 justify-end pt-2">
-                <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)]">
+                <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-all active:scale-[0.98]">
                   Cancel
                 </button>
-                <button type="submit" disabled={saving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50">
+                <button type="submit" disabled={saving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50">
                   {saving ? 'Saving…' : 'Save'}
                 </button>
               </div>
@@ -347,10 +347,10 @@ export const SavingsGoals = () => {
                   />
                 </div>
                 <div className="flex gap-2 justify-end pt-2">
-                  <button type="button" onClick={() => setEditMode(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)]">
+                  <button type="button" onClick={() => setEditMode(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-all active:scale-[0.98]">
                     Cancel
                   </button>
-                  <button type="submit" disabled={editSaving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50">
+                  <button type="submit" disabled={editSaving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50">
                     {editSaving ? 'Saving…' : 'Save'}
                   </button>
                 </div>
@@ -402,7 +402,7 @@ export const SavingsGoals = () => {
                     <button
                       type="submit"
                       disabled={adding}
-                      className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50 transition-colors"
+                      className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
                     >
                       {adding ? 'Adding…' : 'Add'}
                     </button>

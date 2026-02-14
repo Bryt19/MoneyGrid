@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "../../contexts/NotificationContext";
@@ -54,6 +54,9 @@ export const TransactionList = () => {
   const [editReceiptFile, setEditReceiptFile] = useState<File | null>(null);
   const [editSaving, setEditSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<UiTransaction | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const { totalIncome, remaining, isRedLine } = useMemo(() => {
     const expenses = transactions
@@ -417,10 +420,18 @@ export const TransactionList = () => {
             </label>
             <input
               type="file"
+              ref={fileInputRef}
               accept=".png,.jpg,.jpeg,.pdf"
               onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-[var(--text-muted)] file:mr-2 file:rounded file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:text-white file:hover:bg-primary-hover"
+              className="hidden"
             />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
+            >
+              {receiptFile ? receiptFile.name : "Choose receipt"}
+            </button>
           </div>
         </div>
         <div>
@@ -438,7 +449,7 @@ export const TransactionList = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[var(--border)] bg-[var(--card-bg)] px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-colors min-h-[44px] touch-manipulation cursor-pointer shadow-sm"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] min-h-[44px] touch-manipulation cursor-pointer shrink-0"
           >
             <Plus className="h-4 w-4 shrink-0" />
             Add transaction
@@ -674,10 +685,18 @@ export const TransactionList = () => {
                   )}
                   <input
                     type="file"
+                    ref={editFileInputRef}
                     accept=".png,.jpg,.jpeg,.pdf"
                     onChange={(e) => setEditReceiptFile(e.target.files?.[0] ?? null)}
-                    className="block w-full text-sm text-[var(--text-muted)] file:mr-2 file:rounded file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:text-white file:hover:bg-primary-hover"
+                    className="hidden"
                   />
+                  <button
+                    type="button"
+                    onClick={() => editFileInputRef.current?.click()}
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
+                  >
+                    {editReceiptFile ? editReceiptFile.name : (editReceiptUrl ? "Change receipt" : "Choose receipt")}
+                  </button>
                 </div>
                 <div className="flex gap-2 justify-end pt-2">
                   <button
@@ -690,7 +709,7 @@ export const TransactionList = () => {
                   <button
                     type="submit"
                     disabled={editSaving}
-                    className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50"
+                    className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
                   >
                     {editSaving ? "Saving…" : "Save"}
                   </button>

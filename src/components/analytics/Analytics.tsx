@@ -72,7 +72,7 @@ export const Analytics = () => {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
       const start = d.toISOString().slice(0, 10)
       const end = new Date(d.getFullYear(), d.getMonth() + 1, 0).toISOString().slice(0, 10)
-      const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+      const label = d.toLocaleDateString('en-US', { month: 'short' })
       const inMonth = txList.filter((t) => t.date >= start && t.date <= end)
       const income = inMonth.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0)
       const expenses = inMonth.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
@@ -119,7 +119,11 @@ export const Analytics = () => {
   )
 
   const tooltipStyle = useMemo(
-    () => ({ background: 'var(--card-bg)', border: '1px solid var(--border)' }),
+    () => ({ 
+      background: 'var(--card-bg)', 
+      border: '1px solid var(--border)',
+      color: 'var(--text)'
+    }),
     [],
   )
 
@@ -183,7 +187,12 @@ export const Analytics = () => {
                   axisLine={{ stroke: 'var(--border)' }}
                   tickLine={false}
                 />
-                <Tooltip formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text)' }} />
+                <Tooltip 
+                  formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} 
+                  contentStyle={tooltipStyle} 
+                  labelStyle={{ color: 'var(--text)' }} 
+                  itemStyle={{ color: 'var(--text)' }}
+                />
                 <Bar dataKey="income" fill="#059669" name="Income" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="expenses" fill="#92400e" name="Expenses" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -206,7 +215,12 @@ export const Analytics = () => {
                   axisLine={{ stroke: 'var(--border)' }}
                   tickLine={false}
                 />
-                <Tooltip formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} contentStyle={tooltipStyle} labelStyle={{ color: 'var(--text)' }} />
+                <Tooltip 
+                  formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} 
+                  contentStyle={tooltipStyle} 
+                  labelStyle={{ color: 'var(--text)' }} 
+                  itemStyle={{ color: 'var(--text)' }}
+                />
                 <Line type="monotone" dataKey="balance" stroke="#2563eb" name="Balance" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
@@ -215,9 +229,9 @@ export const Analytics = () => {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-4">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-3">
           <h2 className="text-sm font-semibold text-[var(--text)] mb-3">Spending by category</h2>
-          <div className="h-72">
+          <div className="h-80">
             {spendingByCategory.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -226,16 +240,19 @@ export const Analytics = () => {
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
-                    cy="50%"
+                    cy="45%"
                     outerRadius={90}
-                    label={({ name, value }) => `${name}: ${formatCurrency(value, currency)}`}
                   >
                     {spendingByCategory.map((_, i) => (
                       <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} contentStyle={tooltipStyle} />
-                  <Legend />
+                  <Tooltip 
+                    formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} 
+                    contentStyle={tooltipStyle} 
+                    itemStyle={{ color: 'var(--text)' }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: '3px' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -245,26 +262,28 @@ export const Analytics = () => {
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-4">
           <h2 className="text-sm font-semibold text-[var(--text)] mb-3">Top expense categories (bar)</h2>
-          <div className="h-72">
+          <div className="h-80">
             {spendingByCategory.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={spendingByCategory} layout="vertical" margin={{ top: 4, right: 24, left: 60, bottom: 4 }}>
+                <BarChart data={spendingByCategory} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                   <XAxis 
-                    type="number" 
-                    tick={{ fill: 'var(--text-muted)', fontSize: 11 }} 
-                    tickFormatter={(v) => formatCurrency(v, currency)} 
-                    axisLine={{ stroke: 'var(--border)' }}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    type="category" 
                     dataKey="name" 
                     tick={{ fill: 'var(--text-muted)', fontSize: 11 }} 
                     axisLine={{ stroke: 'var(--border)' }}
                     tickLine={false}
                   />
-                  <Tooltip formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} contentStyle={tooltipStyle} />
-                  <Bar dataKey="value" fill="#2563eb" radius={[0, 4, 4, 0]} name="Spent" />
+                  <YAxis 
+                    tick={{ fill: 'var(--text-muted)', fontSize: 11 }} 
+                    tickFormatter={(v) => `${v}`} 
+                    axisLine={{ stroke: 'var(--border)' }}
+                    tickLine={false}
+                  />
+                  <Tooltip 
+                    formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} 
+                    contentStyle={tooltipStyle} 
+                    itemStyle={{ color: 'var(--text)' }}
+                  />
+                  <Bar dataKey="value" fill="#2563eb" radius={[4, 4, 0, 0]} name="Spent" />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -277,7 +296,7 @@ export const Analytics = () => {
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-4">
           <h2 className="text-sm font-semibold text-[var(--text)] mb-3">Income by category</h2>
-          <div className="h-64">
+          <div className="h-72">
             {incomeByCategory.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -286,16 +305,19 @@ export const Analytics = () => {
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label={({ name, value }) => `${name}: ${formatCurrency(value, currency)}`}
+                    cy="40%"
+                    outerRadius={90}
                   >
                     {incomeByCategory.map((_, i) => (
                       <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} contentStyle={tooltipStyle} />
-                  <Legend />
+                  <Tooltip 
+                    formatter={(v: any) => formatCurrency(Number(v ?? 0), currency)} 
+                    contentStyle={tooltipStyle} 
+                    itemStyle={{ color: 'var(--text)' }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: '2px' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -305,7 +327,7 @@ export const Analytics = () => {
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-4">
           <h2 className="text-sm font-semibold text-[var(--text)] mb-3">Savings goals progress</h2>
-          <div className="h-64">
+          <div className="h-80">
             {savingsProgress.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={savingsProgress} margin={{ top: 8, right: 24, left: 0, bottom: 4 }}>
@@ -321,7 +343,11 @@ export const Analytics = () => {
                     axisLine={{ stroke: 'var(--border)' }}
                     tickLine={false}
                   />
-                  <Tooltip formatter={(v: any, _name: any, item: any) => item.payload ? [formatCurrency(item.payload.current, currency) + ' / ' + formatCurrency(item.payload.target, currency), 'Progress'] : [String(v ?? 0) + '%', 'Progress']} contentStyle={tooltipStyle} />
+                  <Tooltip 
+                    formatter={(v: any, _name: any, item: any) => item.payload ? [formatCurrency(item.payload.current, currency) + ' / ' + formatCurrency(item.payload.target, currency), 'Progress'] : [String(v ?? 0) + '%', 'Progress']} 
+                    contentStyle={tooltipStyle} 
+                    itemStyle={{ color: 'var(--text)' }}
+                  />
                   <Bar dataKey="pct" fill="#059669" name="Progress %" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>

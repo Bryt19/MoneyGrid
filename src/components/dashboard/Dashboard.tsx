@@ -115,7 +115,6 @@ export const Dashboard = () => {
         .slice(0, 10);
       const label = d.toLocaleDateString("en-US", {
         month: "short",
-        year: "2-digit",
       });
       const inMonth = txList.filter((t) => t.date >= start && t.date <= end);
       const income = inMonth
@@ -228,7 +227,7 @@ export const Dashboard = () => {
           <h2 className="text-sm font-semibold text-[var(--text)] mb-3">
             Spending by category
           </h2>
-          <div className="h-80 pt-6 pb-2">
+          <div className="h-80 pt-0 pb-2">
             {spendingByCategory.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -239,9 +238,6 @@ export const Dashboard = () => {
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
-                    label={({ name, value }) =>
-                      `${name}: ${formatCurrency(value, currency)}`
-                    }
                   >
                     {spendingByCategory.map((_, i) => (
                       <Cell
@@ -254,6 +250,12 @@ export const Dashboard = () => {
                     formatter={(v: number | undefined) =>
                       formatCurrency(v ?? 0, currency)
                     }
+                    contentStyle={{
+                      background: "var(--card-bg)",
+                      border: "1px solid var(--border)",
+                      color: "var(--text)"
+                    }}
+                    itemStyle={{ color: "var(--text)" }}
                   />
                   <Legend />
                 </PieChart>
@@ -296,7 +298,9 @@ export const Dashboard = () => {
                   contentStyle={{
                     background: "var(--card-bg)",
                     border: "1px solid var(--border)",
+                    color: "var(--text)"
                   }}
+                  itemStyle={{ color: "var(--text)" }}
                   labelStyle={{ color: "var(--text)" }}
                 />
                 <Bar

@@ -162,14 +162,24 @@ export function AuthCard({
                       'disabled:opacity-50 disabled:cursor-not-allowed'
                     )}
                   />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--text-muted)] hover:text-[var(--text)] transition-colors"
-                    onClick={onShowPasswordToggle}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-1.5">
+                    <button
+                      type="button"
+                      className="group flex h-8 w-8 items-center justify-center rounded-lg transition-all hover:bg-[var(--border)] active:scale-90"
+                      onClick={onShowPasswordToggle}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      <motion.div
+                        key={showPassword ? 'eye-off' : 'eye'}
+                        initial={{ opacity: 0, rotate: -30, scale: 0.8 }}
+                        animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                        className="text-[var(--text-muted)] group-hover:text-[var(--text)]"
+                      >
+                        {showPassword ? <EyeOff size={20} strokeWidth={2.25} /> : <Eye size={20} strokeWidth={2.25} />}
+                      </motion.div>
+                    </button>
+                  </div>
                 </div>
                 {passwordHint && (
                   <p className="mt-1.5 text-xs text-[var(--text-muted)]">

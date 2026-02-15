@@ -264,7 +264,7 @@ export const Budgets = () => {
                     <div><dt className="text-[var(--text-muted)]">Description</dt><dd className="text-sm text-[var(--text)] whitespace-pre-wrap">{selected.description}</dd></div>
                   )}
                 </dl>
-                <div className="flex gap-2 mt-5">
+                <div className="flex gap-2 mt-5 justify-end">
                   <button type="button" onClick={() => setEditMode(true)} className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)]">
                     <Pencil className="h-4 w-4" /> Edit
                   </button>

@@ -409,7 +409,7 @@ export const SavingsGoals = () => {
                   </div>
                   <p className="text-xs text-[var(--text-muted)]">Add an amount to update progress toward your target.</p>
                 </form>
-                <div className="flex gap-2 mt-5">
+                <div className="flex gap-2 mt-5 justify-end">
                   <button
                     type="button"
                     onClick={() => setEditMode(true)}

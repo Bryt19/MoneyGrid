@@ -348,7 +348,11 @@ export const Analytics = () => {
                     contentStyle={tooltipStyle} 
                     itemStyle={{ color: 'var(--text)' }}
                   />
-                  <Bar dataKey="pct" fill="#059669" name="Progress %" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="pct" name="Progress %" radius={[4, 4, 0, 0]}>
+                    {savingsProgress.map((_, i) => (
+                      <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (

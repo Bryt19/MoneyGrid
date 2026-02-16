@@ -122,6 +122,25 @@ export const SavingsGoals = () => {
     return 'bg-red-500'
   }
 
+  function getDeadlineColor(deadline: string | null): string {
+    if (!deadline) return 'text-[var(--text-muted)]'
+    
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const target = new Date(deadline)
+    target.setHours(0, 0, 0, 0)
+    
+    const diffTime = target.getTime() - today.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 0) return 'text-red-500 font-semibold'
+    if (diffDays < 0) return 'text-red-700 font-semibold' // Past deadline
+    if (diffDays <= 7) return 'text-orange-500 font-semibold'
+    
+    return 'text-[var(--text-muted)]'
+  }
+
   const handleDelete = async () => {
     if (!deleteTarget) return
     try {
@@ -280,7 +299,9 @@ export const SavingsGoals = () => {
                         />
                       </div>
                     </div>
-                    <span className="text-[var(--text-muted)] shrink-0">{g.deadline ?? '—'}</span>
+                    <span className={`text-sm shrink-0 ${getDeadlineColor(g.deadline)}`}>
+                      {g.deadline ?? '—'}
+                    </span>
                   </div>
                 </li>
               )
@@ -383,7 +404,9 @@ export const SavingsGoals = () => {
                   </div>
                   <div>
                     <dt className="text-[var(--text-muted)]">Deadline</dt>
-                    <dd className="font-medium text-[var(--text)]">{selected.deadline ?? '—'}</dd>
+                    <dd className={`font-medium ${getDeadlineColor(selected.deadline)}`}>
+                      {selected.deadline ?? '—'}
+                    </dd>
                   </div>
                 </dl>
                 <form onSubmit={handleAddToGoal} className="mt-4 p-3 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] space-y-2">

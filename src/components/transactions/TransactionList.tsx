@@ -425,13 +425,28 @@ export const TransactionList = () => {
               onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)}
               className="hidden"
             />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
-            >
-              {receiptFile ? receiptFile.name : "Choose receipt"}
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
+              >
+                {receiptFile ? receiptFile.name : "Choose receipt"}
+              </button>
+              {receiptFile && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReceiptFile(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                  className="p-2 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 transition-all active:scale-95"
+                  title="Clear choice"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <div>
@@ -690,13 +705,28 @@ export const TransactionList = () => {
                     onChange={(e) => setEditReceiptFile(e.target.files?.[0] ?? null)}
                     className="hidden"
                   />
-                  <button
-                    type="button"
-                    onClick={() => editFileInputRef.current?.click()}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
-                  >
-                    {editReceiptFile ? editReceiptFile.name : (editReceiptUrl ? "Change receipt" : "Choose receipt")}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => editFileInputRef.current?.click()}
+                      className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
+                    >
+                      {editReceiptFile ? editReceiptFile.name : (editReceiptUrl ? "Change receipt" : "Choose receipt")}
+                    </button>
+                    {editReceiptFile && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditReceiptFile(null);
+                          if (editFileInputRef.current) editFileInputRef.current.value = "";
+                        }}
+                        className="p-2 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 transition-all active:scale-95"
+                        title="Clear choice"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="flex gap-2 justify-end pt-2">
                   <button

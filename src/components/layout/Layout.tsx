@@ -61,12 +61,16 @@ export const Layout = () => {
   const [showMobileHeader, setShowMobileHeader] = useState(true);
   const lastScrollTop = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const desktopProfileRef = useRef<HTMLDivElement>(null);
+  const mobileProfileRef = useRef<HTMLDivElement>(null);
   const welcomeShownRef = useRef(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+      const isOutsideDesktop = !desktopProfileRef.current || !desktopProfileRef.current.contains(event.target as Node);
+      const isOutsideMobile = !mobileProfileRef.current || !mobileProfileRef.current.contains(event.target as Node);
+      
+      if (isOutsideDesktop && isOutsideMobile) {
         setProfileMenuOpen(false);
       }
     };
@@ -151,7 +155,10 @@ export const Layout = () => {
         ))}
       </nav>
       {/* Profile block */}
-      <div className="p-3 border-t border-[var(--border)] shrink-0 relative" ref={profileMenuRef}>
+      <div 
+        className="p-3 border-t border-[var(--border)] shrink-0 relative" 
+        ref={isMobile ? mobileProfileRef : desktopProfileRef}
+      >
         {profileMenuOpen && (
           <div className="absolute bottom-full left-3 right-3 mb-2 rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-2 shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
             <Link

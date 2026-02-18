@@ -194,7 +194,7 @@ export const SavingsGoals = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search goals..."
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-sm text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-base text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <button
@@ -230,7 +230,7 @@ export const SavingsGoals = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Emergency fund"
-                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                 />
               </div>
               <div>
@@ -241,7 +241,7 @@ export const SavingsGoals = () => {
                   step="0.01"
                   value={targetAmount}
                   onChange={(e) => setTargetAmount(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   required
                 />
               </div>
@@ -251,7 +251,7 @@ export const SavingsGoals = () => {
                   type="date"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                 />
               </div>
               <div className="flex gap-2 justify-end pt-2">
@@ -332,7 +332,7 @@ export const SavingsGoals = () => {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   />
                 </div>
                 <div>
@@ -343,7 +343,7 @@ export const SavingsGoals = () => {
                     step="0.01"
                     value={editTargetAmount}
                     onChange={(e) => setEditTargetAmount(e.target.value)}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                     required
                   />
                 </div>
@@ -355,7 +355,7 @@ export const SavingsGoals = () => {
                     step="0.01"
                     value={editCurrentAmount}
                     onChange={(e) => setEditCurrentAmount(e.target.value)}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   />
                 </div>
                 <div>
@@ -364,7 +364,7 @@ export const SavingsGoals = () => {
                     type="date"
                     value={editDeadline}
                     onChange={(e) => setEditDeadline(e.target.value)}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   />
                 </div>
                 <div className="flex gap-2 justify-end pt-2">
@@ -420,7 +420,7 @@ export const SavingsGoals = () => {
                         setAddAmount(handleAmountInputChange(e.target.value))
                       }
                       placeholder="0.00"
-                      className="flex-1 min-w-[100px] rounded-lg border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                      className="flex-1 min-w-[100px] rounded-lg border border-[var(--border)] bg-[var(--card-bg)] px-3 py-2 text-base text-[var(--text)]"
                     />
                     <button
                       type="submit"

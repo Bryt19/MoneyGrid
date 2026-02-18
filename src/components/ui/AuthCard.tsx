@@ -130,7 +130,7 @@ export function AuthCard({
                   autoComplete={emailAutoComplete}
                   required
                   className={cn(
-                    'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 text-sm text-[var(--text)]',
+                    'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 text-base text-[var(--text)]',
                     'placeholder:text-[var(--text-muted)]',
                     'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]',
                     'disabled:opacity-50 disabled:cursor-not-allowed'
@@ -156,7 +156,7 @@ export function AuthCard({
                     required
                     minLength={passwordMinLength}
                     className={cn(
-                      'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 pr-11 text-sm text-[var(--text)]',
+                      'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 pr-11 text-base text-[var(--text)]',
                       'placeholder:text-[var(--text-muted)]',
                       'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]',
                       'disabled:opacity-50 disabled:cursor-not-allowed'

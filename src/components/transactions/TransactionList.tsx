@@ -326,7 +326,7 @@ export const TransactionList = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search transactions..."
-            className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-sm text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
+            className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-base text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
           />
         </div>
       </header>
@@ -381,7 +381,7 @@ export const TransactionList = () => {
                 setAmount(handleAmountInputChange(e.target.value))
               }
               placeholder="0.00"
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
               required
             />
           </div>
@@ -392,7 +392,7 @@ export const TransactionList = () => {
             <select
               value={type}
               onChange={(e) => setType(e.target.value as TransactionType)}
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
             >
               <option value="expense">Expense</option>
               <option value="income">Income</option>
@@ -405,7 +405,7 @@ export const TransactionList = () => {
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
             >
               {typeCategories.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -429,7 +429,7 @@ export const TransactionList = () => {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
+                className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
               >
                 {receiptFile ? receiptFile.name : "Choose receipt"}
               </button>
@@ -458,7 +458,7 @@ export const TransactionList = () => {
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
             placeholder="Notes"
-            className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+            className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
           />
         </div>
         <div className="flex justify-end">
@@ -613,7 +613,7 @@ export const TransactionList = () => {
                       )
                     }
                     placeholder="0.00"
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                     required
                   />
                 </div>
@@ -626,7 +626,7 @@ export const TransactionList = () => {
                     onChange={(e) =>
                       setEditType(e.target.value as TransactionType)
                     }
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   >
                     <option value="expense">Expense</option>
                     <option value="income">Income</option>
@@ -639,7 +639,7 @@ export const TransactionList = () => {
                   <select
                     value={editCategoryId}
                     onChange={(e) => setEditCategoryId(e.target.value)}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   >
                     {categories
                       .filter((c) => c.type === editType)
@@ -658,7 +658,7 @@ export const TransactionList = () => {
                     type="date"
                     value={editDate}
                     onChange={(e) => setEditDate(e.target.value)}
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                     required
                   />
                 </div>
@@ -671,7 +671,7 @@ export const TransactionList = () => {
                     value={editDescription}
                     onChange={(e) => setEditDescription(e.target.value)}
                     placeholder="Optional"
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]"
+                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]"
                   />
                 </div>
                 <div>
@@ -709,7 +709,7 @@ export const TransactionList = () => {
                     <button
                       type="button"
                       onClick={() => editFileInputRef.current?.click()}
-                      className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
+                      className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)] transition-all hover:bg-[var(--border)] hover:shadow-sm overflow-hidden text-ellipsis whitespace-nowrap active:scale-[0.98] focus:ring-2 focus:ring-primary/20"
                     >
                       {editReceiptFile ? editReceiptFile.name : (editReceiptUrl ? "Change receipt" : "Choose receipt")}
                     </button>

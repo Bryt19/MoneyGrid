@@ -135,7 +135,7 @@ export const Budgets = () => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search budgets..."
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-sm text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--card-bg)] py-2 pl-9 pr-3 text-base text-[var(--text)] transition-all focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <button type="button" onClick={() => setOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-[0.98] shrink-0">
@@ -155,27 +155,27 @@ export const Budgets = () => {
               {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/50 dark:text-red-200">{error}</div>}
               <div>
                 <label className="mb-1 block text-sm font-medium text-[var(--text)]">Category</label>
-                <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" required>
+                <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" required>
                   {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-[var(--text)]">Amount</label>
-                <input type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(handleAmountInputChange(e.target.value))} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" placeholder="0.00" required />
+                <input type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(handleAmountInputChange(e.target.value))} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" placeholder="0.00" required />
               </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-[var(--text)]">Start date</label>
-                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" required />
+                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" required />
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium text-[var(--text)]">End date</label>
-                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" required />
+                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" required />
                   </div>
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-[var(--text)]">Description (optional)</label>
-                  <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Notes" className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" />
+                  <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} placeholder="Notes" className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" />
                 </div>
               <div className="flex gap-2 justify-end pt-2">
                 <button type="button" onClick={() => setOpen(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--border)] transition-all active:scale-[0.98]">Cancel</button>
@@ -227,27 +227,27 @@ export const Budgets = () => {
                 {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950/50 dark:text-red-200">{error}</div>}
                 <div>
                   <label className="mb-1 block text-sm font-medium text-[var(--text)]">Category</label>
-                  <select value={editCategoryId} onChange={(e) => setEditCategoryId(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" required>
+                  <select value={editCategoryId} onChange={(e) => setEditCategoryId(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" required>
                     {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-[var(--text)]">Amount</label>
-                  <input type="text" inputMode="decimal" value={editAmount} onChange={(e) => setEditAmount(handleAmountInputChange(e.target.value))} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" placeholder="0.00" required />
+                  <input type="text" inputMode="decimal" value={editAmount} onChange={(e) => setEditAmount(handleAmountInputChange(e.target.value))} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" placeholder="0.00" required />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-[var(--text)]">Start date</label>
-                    <input type="date" value={editStartDate} onChange={(e) => setEditStartDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" required />
+                    <input type="date" value={editStartDate} onChange={(e) => setEditStartDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg(--page-bg)] px-3 py-2 text-base text-[var(--text)]" required />
                   </div>
                   <div>
                     <label className="mb-1 block text-sm font-medium text-[var(--text)]">End date</label>
-                    <input type="date" value={editEndDate} onChange={(e) => setEditEndDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" required />
+                    <input type="date" value={editEndDate} onChange={(e) => setEditEndDate(e.target.value)} className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" required />
                   </div>
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-[var(--text)]">Description (optional)</label>
-                  <textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={2} placeholder="Notes" className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-sm text-[var(--text)]" />
+                  <textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={2} placeholder="Notes" className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-base text-[var(--text)]" />
                 </div>
                 <div className="flex gap-2 justify-end pt-2">
                   <button type="button" onClick={() => setEditMode(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)]">Cancel</button>

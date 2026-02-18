@@ -32,7 +32,7 @@ const formatWithCommas = (val: string) => {
 const parseCommas = (val: string) => val.replace(/,/g, '')
 
 export const Settings = () => {
-  const { user, signOut, updateDisplayName } = useAuth()
+  const { user, updateDisplayName, deleteAccount } = useAuth()
   const { isDark, setTheme } = useTheme()
   const [_settings, setSettings] = useState<UserSettings | null>(null)
   const [currency, setCurrency] = useState('USD')
@@ -439,17 +439,23 @@ export const Settings = () => {
         open={deleteAccountModalOpen}
         onClose={() => setDeleteAccountModalOpen(false)}
         onConfirm={async () => {
-          await signOut()
-          // Note: Full account deletion requires Supabase Dashboard → Authentication → Users
-          window.location.href = '/'
+          try {
+            setSaving(true)
+            await deleteAccount()
+            window.location.href = '/'
+          } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to delete account.')
+          } finally {
+            setSaving(false)
+          }
         }}
         title="Delete account?"
         description={
           <>
-            You will be signed out. To permanently delete your account and all data, use your Supabase project dashboard: Authentication → Users → delete your user, or contact support.
+            This will permanently delete your account and all your data (transactions, budgets, savings, settings). This action is irreversible.
           </>
         }
-        confirmLabel="Sign out"
+        confirmLabel={saving ? 'Deleting…' : 'Delete my account'}
         variant="danger"
       />
     </div>

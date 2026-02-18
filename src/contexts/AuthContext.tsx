@@ -11,6 +11,7 @@ type AuthContextValue = {
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
   updateDisplayName: (displayName: string) => Promise<void>
+  deleteAccount: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -82,9 +83,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data?.user) setUser(data.user)
   }
 
+  const deleteAccount = async () => {
+    const { error } = await supabase.rpc('delete_user_account')
+    if (error) throw error
+    await signOut()
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, signUp, signIn, signOut, resetPassword, updateDisplayName }}
+      value={{
+        user,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        resetPassword,
+        updateDisplayName,
+        deleteAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>

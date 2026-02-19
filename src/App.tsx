@@ -10,12 +10,16 @@ import { Analytics } from './components/analytics/Analytics'
 import { Budgets } from './components/budgets/Budgets'
 import { SavingsGoals } from './components/savings/SavingsGoals'
 import { Settings } from './components/settings/Settings'
+import { ForgotPassword } from './components/auth/ForgotPassword'
+import { ResetPassword } from './components/auth/ResetPassword'
 
 export const App = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route
         path="/"

@@ -1,4 +1,4 @@
-# MyFinTrack
+# MoneyGrid
 
 A modern, full-featured personal finance web app for tracking income, expenses, budgets, and savings goals. Built with React, TypeScript, and Supabase.
 

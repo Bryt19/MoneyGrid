@@ -17,7 +17,7 @@ const START_OF_WEEK = [
   { value: 'sunday', label: 'Sunday' },
   { value: 'monday', label: 'Monday' },
 ]
-const PREF_STORAGE_KEY = 'myfintrack_prefs'
+const PREF_STORAGE_KEY = 'moneygrid_prefs'
 
 const formatWithCommas = (val: string) => {
   if (!val) return ''
@@ -385,7 +385,7 @@ export const Settings = () => {
       {/* About */}
       <section className="rounded-xl border border-[var(--border)] bg-[var(--card-bg)] p-6">
         <h2 className="text-lg font-semibold text-[var(--text)] mb-3">About</h2>
-        <p className="text-sm text-[var(--text-muted)]">MyFinTrack — track income, expenses, budgets, and savings.</p>
+        <p className="text-sm text-[var(--text-muted)]">MoneyGrid — track income, expenses, budgets, and savings.</p>
         <p className="text-xs text-[var(--text-muted)] mt-1">Version 1.0.0</p>
       </section>
 

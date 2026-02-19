@@ -1,5 +1,5 @@
 -- =============================================================================
--- MyFinTrack – Full database schema + RLS (Supabase)
+-- MoneyGrid – Full database schema + RLS (Supabase)
 -- Run this entire file in Supabase SQL Editor (Dashboard → SQL Editor → New query)
 -- =============================================================================
 

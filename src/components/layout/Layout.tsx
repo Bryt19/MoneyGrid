@@ -121,7 +121,7 @@ export const Layout = () => {
           />
           <div className="min-w-0">
             <p className="font-semibold text-[var(--text)] truncate">
-              MyFinTrack
+              MoneyGrid
             </p>
             <p className="text-xs text-[var(--text-muted)]">
               Expense tracker
@@ -238,7 +238,7 @@ export const Layout = () => {
               alt=""
               className="h-7 w-7 shrink-0 rounded-lg object-contain"
             />
-            <span className="font-semibold text-[var(--text)]">MyFinTrack</span>
+            <span className="font-semibold text-[var(--text)]">MoneyGrid</span>
           </div>
           <div className="ml-auto flex items-center shrink-0">
             <ThemeToggle

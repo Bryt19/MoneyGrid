@@ -40,7 +40,7 @@ export const Login = () => {
     <AuthCard
       mode="signin"
       title="Welcome back"
-      subtitle="Sign in to your MyFinTrack account"
+      subtitle="Sign in to your MoneyGrid account"
       email={email}
       password={password}
       onEmailChange={setEmail}
@@ -57,16 +57,26 @@ export const Login = () => {
       emailAutoComplete="email"
       passwordAutoComplete="current-password"
       passwordMinLength={6}
+      passwordFooter={
+        <Link
+          to="/forgot-password"
+          className="text-xs font-medium text-primary hover:underline focus:outline-none focus:underline"
+        >
+          Forgot password?
+        </Link>
+      }
       footer={
-        <>
-          Don&apos;t have an account?{' '}
-          <Link
-            to="/register"
-            className="font-semibold text-primary hover:underline focus:outline-none focus:underline"
-          >
-            Sign up
-          </Link>
-        </>
+        <div className="flex flex-col gap-2 text-center text-[var(--text-muted)]">
+          <div>
+            Don&apos;t have an account?{' '}
+            <Link
+              to="/register"
+              className="font-semibold text-primary hover:underline focus:outline-none focus:underline"
+            >
+              Sign up
+            </Link>
+          </div>
+        </div>
       }
     />
   )

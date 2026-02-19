@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 const cn = (...classes: string[]) => classes.filter(Boolean).join(' ')
 
-export type AuthCardMode = 'signin' | 'signup'
+export type AuthCardMode = 'signin' | 'signup' | 'forgot-password' | 'reset-password'
 
 export type AuthCardProps = {
   mode: AuthCardMode
@@ -31,6 +31,10 @@ export type AuthCardProps = {
   emailAutoComplete?: 'email' | 'username'
   passwordAutoComplete?: 'current-password' | 'new-password'
   passwordMinLength?: number
+  onBackToLogin?: () => void
+  passwordFooter?: ReactNode
+  confirmPassword?: string
+  onConfirmPasswordChange?: (value: string) => void
 }
 
 export function AuthCard({
@@ -56,6 +60,10 @@ export function AuthCard({
   passwordAutoComplete = 'current-password',
   passwordMinLength = 6,
   success,
+  onBackToLogin,
+  passwordFooter,
+  confirmPassword,
+  onConfirmPasswordChange,
 }: AuthCardProps) {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50/40 dark:from-[var(--page-bg)] dark:via-[var(--page-bg)] dark:to-[var(--page-bg)] p-4">
@@ -77,7 +85,7 @@ export function AuthCard({
               <img src="/favicon.svg" alt="" className="h-9 w-9" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold text-[var(--text)] mb-2">
-              MyFinTrack
+              MoneyGrid
             </h2>
             <p className="text-sm text-[var(--text-muted)] max-w-xs">
               Track income, expenses, budgets, and savings in one place. Take control of your money.
@@ -97,7 +105,7 @@ export function AuthCard({
               <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 ring-1 ring-primary/20">
                 <img src="/favicon.svg" alt="" className="h-7 w-7" />
               </div>
-              <span className="text-lg font-bold text-[var(--text)]">MyFinTrack</span>
+              <span className="text-lg font-bold text-[var(--text)]">MoneyGrid</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)] mb-1">
               {title}
@@ -114,86 +122,131 @@ export function AuthCard({
                 </div>
               )}
 
-              <div>
-                <label
-                  htmlFor={emailId}
-                  className="block text-sm font-medium text-[var(--text)] mb-1.5"
-                >
-                  Email <span className="text-primary">*</span>
-                </label>
-                <input
-                  id={emailId}
-                  type="email"
-                  value={email}
-                  onChange={(e) => onEmailChange(e.target.value)}
-                  placeholder="Enter your email address"
-                  autoComplete={emailAutoComplete}
-                  required
-                  className={cn(
-                    'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 text-base text-[var(--text)]',
-                    'placeholder:text-[var(--text-muted)]',
-                    'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]',
-                    'disabled:opacity-50 disabled:cursor-not-allowed'
-                  )}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor={passwordId}
-                  className="block text-sm font-medium text-[var(--text)] mb-1.5"
-                >
-                  Password <span className="text-primary">*</span>
-                </label>
-                <div className="relative">
+              {_mode !== 'reset-password' && (
+                <div>
+                  <label
+                    htmlFor={emailId}
+                    className="block text-sm font-medium text-[var(--text)] mb-1.5"
+                  >
+                    Email <span className="text-primary">*</span>
+                  </label>
                   <input
-                    id={passwordId}
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => onPasswordChange(e.target.value)}
-                    placeholder="Enter your password"
-                    autoComplete={passwordAutoComplete}
+                    id={emailId}
+                    type="email"
+                    value={email}
+                    onChange={(e) => onEmailChange(e.target.value)}
+                    placeholder="Enter your email address"
+                    autoComplete={emailAutoComplete}
                     required
-                    minLength={passwordMinLength}
                     className={cn(
-                      'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 pr-11 text-base text-[var(--text)]',
+                      'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 text-base text-[var(--text)]',
                       'placeholder:text-[var(--text-muted)]',
                       'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]',
                       'disabled:opacity-50 disabled:cursor-not-allowed'
                     )}
                   />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-1.5">
-                    <button
-                      type="button"
-                      className="group flex h-8 w-8 items-center justify-center rounded-lg transition-all hover:bg-[var(--border)] active:scale-90"
-                      onClick={onShowPasswordToggle}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      <motion.div
-                        key={showPassword ? 'eye-off' : 'eye'}
-                        initial={{ opacity: 0, rotate: -30, scale: 0.8 }}
-                        animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                        transition={{ duration: 0.15, ease: 'easeOut' }}
-                        className="text-[var(--text-muted)] group-hover:text-[var(--text)]"
+                </div>
+              )}
+
+              {_mode !== 'forgot-password' && (
+                <div>
+                  <label
+                    htmlFor={passwordId}
+                    className="block text-sm font-medium text-[var(--text)] mb-1.5"
+                  >
+                    {_mode === 'reset-password' ? 'New Password' : 'Password'}{' '}
+                    <span className="text-primary">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      id={passwordId}
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => onPasswordChange(e.target.value)}
+                      placeholder={
+                        _mode === 'reset-password'
+                          ? 'Enter new password'
+                          : 'Enter your password'
+                      }
+                      autoComplete={passwordAutoComplete}
+                      required
+                      minLength={passwordMinLength}
+                      className={cn(
+                        'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 pr-11 text-base text-[var(--text)]',
+                        'placeholder:text-[var(--text-muted)]',
+                        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]',
+                        'disabled:opacity-50 disabled:cursor-not-allowed'
+                      )}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-1.5">
+                      <button
+                        type="button"
+                        className="group flex h-8 w-8 items-center justify-center rounded-lg transition-all hover:bg-[var(--border)] active:scale-90"
+                        onClick={onShowPasswordToggle}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                       >
-                        {showPassword ? <EyeOff size={20} strokeWidth={2.25} /> : <Eye size={20} strokeWidth={2.25} />}
-                      </motion.div>
-                    </button>
+                        <motion.div
+                          key={showPassword ? 'eye-off' : 'eye'}
+                          initial={{ opacity: 0, rotate: -30, scale: 0.8 }}
+                          animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                          transition={{ duration: 0.15, ease: 'easeOut' }}
+                          className="text-[var(--text-muted)] group-hover:text-[var(--text)]"
+                        >
+                          {showPassword ? (
+                            <EyeOff size={20} strokeWidth={2.25} />
+                          ) : (
+                            <Eye size={20} strokeWidth={2.25} />
+                          )}
+                        </motion.div>
+                      </button>
+                    </div>
+                  </div>
+                  {passwordFooter && (
+                    <div className="mt-1.5 flex justify-end">
+                      {passwordFooter}
+                    </div>
+                  )}
+                  {passwordHint && (
+                    <p className="mt-1.5 text-xs text-[var(--text-muted)]">
+                      {passwordHint}
+                    </p>
+                  )}
+                  {passwordErrors.length > 0 && (
+                    <ul className="mt-1.5 text-xs text-amber-600 dark:text-amber-400 list-disc list-inside space-y-0.5">
+                      {passwordErrors.map((msg) => (
+                        <li key={msg}>{msg}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+
+              {onConfirmPasswordChange && (
+                <div>
+                  <label
+                    htmlFor={`${passwordId}-confirm`}
+                    className="block text-sm font-medium text-[var(--text)] mb-1.5"
+                  >
+                    Confirm Password <span className="text-primary">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      id={`${passwordId}-confirm`}
+                      type={showPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => onConfirmPasswordChange(e.target.value)}
+                      placeholder="Confirm your new password"
+                      required
+                      className={cn(
+                        'flex h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-4 py-2 pr-11 text-base text-[var(--text)]',
+                        'placeholder:text-[var(--text-muted)]',
+                        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[var(--card-bg)]',
+                        'disabled:opacity-50 disabled:cursor-not-allowed'
+                      )}
+                    />
                   </div>
                 </div>
-                {passwordHint && (
-                  <p className="mt-1.5 text-xs text-[var(--text-muted)]">
-                    {passwordHint}
-                  </p>
-                )}
-                {passwordErrors.length > 0 && (
-                  <ul className="mt-1.5 text-xs text-amber-600 dark:text-amber-400 list-disc list-inside space-y-0.5">
-                    {passwordErrors.map((msg) => (
-                      <li key={msg}>{msg}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              )}
 
               <motion.div
                 whileHover={{ scale: 1.01 }}
@@ -226,7 +279,16 @@ export function AuthCard({
             </form>
 
             <div className="mt-6 text-center text-sm text-[var(--text-muted)]">
-              {footer}
+              {_mode === 'forgot-password' && onBackToLogin && (
+                <button
+                  type="button"
+                  onClick={onBackToLogin}
+                  className="font-semibold text-primary hover:underline focus:outline-none focus:underline"
+                >
+                  Back to sign in
+                </button>
+              )}
+              {_mode !== 'forgot-password' && footer}
             </div>
           </motion.div>
         </div>

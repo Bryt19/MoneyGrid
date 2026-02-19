@@ -77,7 +77,7 @@ const NotificationToast = ({
   );
 };
 
-const PREF_STORAGE_KEY = "myfintrack_prefs";
+const PREF_STORAGE_KEY = "moneygrid_prefs";
 
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);

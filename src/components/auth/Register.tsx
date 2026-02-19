@@ -64,7 +64,7 @@ export const Register = () => {
     <AuthCard
       mode="signup"
       title="Create your account"
-      subtitle="Get started with MyFinTrack in seconds"
+      subtitle="Get started with MoneyGrid in seconds"
       email={email}
       password={password}
       onEmailChange={setEmail}

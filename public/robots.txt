@@ -16,4 +16,4 @@ Disallow: /analytics
 Disallow: /settings
 
 # Sitemap location
-Sitemap: https://moneygrid.app/sitemap.xml
+Sitemap: https://moneygrid.vercel.app/sitemap.xml

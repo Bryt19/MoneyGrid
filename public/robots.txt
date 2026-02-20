@@ -1,4 +1,19 @@
 User-agent: *
-Allow: /
 
+# Allow all public pages
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /forgot-password
+Allow: /reset-password
+
+# Disallow private/authenticated pages to save crawl budget
+Disallow: /dashboard
+Disallow: /transactions
+Disallow: /budgets
+Disallow: /savings-goals
+Disallow: /analytics
+Disallow: /settings
+
+# Sitemap location
 Sitemap: https://moneygrid.app/sitemap.xml

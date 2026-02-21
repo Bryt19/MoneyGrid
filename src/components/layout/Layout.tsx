@@ -123,8 +123,8 @@ export const Layout = () => {
             <p className="font-semibold text-[var(--text)] truncate">
               MoneyGrid
             </p>
-            <p className="text-xs text-[var(--text-muted)]">
-              Expense tracker
+            <p className="text-[10px] text-[var(--text-muted)] font-medium">
+              moneygrid.vercel.app
             </p>
           </div>
           {isMobile && (
@@ -284,6 +284,15 @@ export const Layout = () => {
           className="flex-1 min-h-0 p-2 md:p-3 overflow-auto"
         >
           <Outlet />
+          <footer className="mt-auto py-6 px-4 border-t border-[var(--border)] text-center">
+            <p className="text-xs text-[var(--text-muted)]">
+              © {new Date().getFullYear()} MoneyGrid. All rights reserved.
+            </p>
+            <div className="mt-2 flex justify-center gap-4">
+              <a href="/sitemap.xml" className="text-xs text-[var(--text-muted)] hover:text-primary transition-colors">Sitemap</a>
+              <a href="https://moneygrid.vercel.app" className="text-xs text-[var(--text-muted)] hover:text-primary transition-colors">moneygrid.vercel.app</a>
+            </div>
+          </footer>
         </main>
       </div>
     </div>

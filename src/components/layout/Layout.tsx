@@ -288,10 +288,6 @@ export const Layout = () => {
             <p className="text-xs text-[var(--text-muted)]">
               © {new Date().getFullYear()} MoneyGrid. All rights reserved.
             </p>
-            <div className="mt-2 flex justify-center gap-4">
-              <a href="/sitemap.xml" className="text-xs text-[var(--text-muted)] hover:text-primary transition-colors">Sitemap</a>
-              <a href="https://moneygrid.vercel.app" className="text-xs text-[var(--text-muted)] hover:text-primary transition-colors">moneygrid.vercel.app</a>
-            </div>
           </footer>
         </main>
       </div>
